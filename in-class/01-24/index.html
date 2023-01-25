@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>JavaScript Work</title>
+
+        <!-- Loads external CSS stylesheet -->
+        <!-- <link rel="stylesheet" href="stle24.css>"-->
+
+        <script>
+            var num = 10;
+            var name = "ARTG";
+
+            // Print:
+            console.log(num);
+
+            num += 10;
+            console.log(num+10);
+            console.log(num+10);
+
+            // concacatination
+            console.log(name+"5330");
+
+            // Booleans
+            var isBigger = num > 100;
+            console.log(isBigger);
+
+            var i=18;
+            i-=1;
+            i--;
+            console.log("i: " + i);
+
+            //Arrays
+            var users = ["Northeastern", 10, "ARTG", 100];
+            console.log(users);
+            console.log(users[0]);
+
+            var newObject = {
+                name: "Hastings Hall",
+                color: "Green",
+                street: "Huntington Avenue",
+                zip: 93793,
+                greetings: function(name) {
+                    console.log("Hey " + name + "!")
+                }
+            }
+
+            console.log(newObject.zip);
+
+            newObject.greetings("Alex");
+
+            //Functions
+            var printHello = function() {
+                console.log("Hello, world :((((")
+            }
+
+            printHello();
+
+            // function with a variable
+            var printName = function(name) {
+                console.log("Hello, " + name + "!")
+            }
+
+            printName("MMM")
+
+            var addValues = function(val1, val2) {
+                let sum = val1+val2;
+                return sum;
+            }
+
+            console.log(addValues(326, "words"))
+            console.log(addValues(10, 23))
+
+            var expValues = function(val) {
+                return val**2;
+            }
+
+            console.log(expValues(11))
+
+            //Conditional statements are if/else statements:
+            var condVal = 10;
+            if(condVal < 5) {
+                console.log("This is not so bad")
+            } else if (condVal == 5) {
+                console.log("This is bad.")
+            } else {
+                console.log("This is awful...")
+            }
+
+            //combine functions with conditional statements:
+            var greaterThanTen = function(val) {
+                if (val > 10) {
+                    console.log("YES!")
+                } else if (val == 10) {
+                    console.log("equals 10") 
+                } else {
+                    val++;
+                }
+                
+                console.log(val)
+                return val;
+            }
+
+            var checker = greaterThanTen(100);
+            
+
+            /*another syntax for initializing functions
+
+            function greaterThanTen(val) {
+                //...
+            }
+
+            greaterThanTen(val) -> {
+                //...
+            }
+
+            */
+
+
+
+        </script>
+    </head>
+
+    <body>
+        <div>
+            <h1 id="hello">Hello, world!</h1>
+        </div>
+    </body>
+</html>
