@@ -116,12 +116,56 @@
 
             */
 
+            function squareRootCheckNumber(val) {
+                if (isNaN(val)) {
+                    return "Not a number!";
+                } else if (val < 0) {
+                    return "Not a positive number."
+                }
+                else {
+                    return Math.sqrt(val);
+                }
+            }
+
+            console.log(squareRootCheckNumber("test"));
+            console.log(squareRootCheckNumber(4));
+            console.log(squareRootCheckNumber(7));
+            console.log(squareRootCheckNumber(7.2));
+            console.log(squareRootCheckNumber(-2));
+
+            function printWholeNumbersFrom(val) {
+                if (isNaN(val)) {
+                    console.log(val + ": Not a number!")
+                }
+                 else if ((val % 1) != 0) {
+                    console.log(val+ ": Not a whole number!")
+                }
+                else if (val <= 0) {
+                    console.log(val + ": Not greater than 0.")
+                } else {
+                    for (let i = val; i >= 0; i--) {
+                        console.log(i);
+                    }
+                }
+            }
+
+            printWholeNumbersFrom("?")
+            printWholeNumbersFrom(1.5)
+            printWholeNumbersFrom(-2)
+            printWholeNumbersFrom(8)
+
+
+
+
+
+
 
 
         </script>
     </head>
 
     <body>
+        <p><a href="../../">Return to Homepage</a></p>
         <div>
             <h1 id="hello">Hello, world!</h1>
         </div>
