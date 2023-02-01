@@ -1,15 +1,55 @@
 <head>
     <script src="scripts\myFunctions.js"></script>
     <script src = "https://d3js.org/d3.v7.min.js"></script>
+    <link rel="stylesheet" href="style31.css">
 </head>
 
 <body>
-    <p><a href="../../">Return to Homepage</a></p>
-    
+    <a href="../../">Return to Homepage</a>
+
     <script>
         var sm = sumAB(2,5);
         console.log(sm)
     </script>
+
+    <div>
+        <h1 id="HL"> JS Libraries, <br> D3.js and Data Manipulation </br></h1>
+    </div>
+
+    <p>This is a test</p>
+    <p>of the D3 function</p>
+    <p>.selectAll for changing multiple elements</p>
+
+    <script>
+        var page_title = d3.select("#HL")
+
+        //Change individual element styles
+        page_title.style("color", "blue")
+        page_title.style("font-size", "60px")
+
+        //change multiple changes ne after the other
+        page_title.style("color", "green")
+            .style("background-color", "pink")
+            .style("font-size", "50px");
+
+        //CHanging element attributes
+        //Assign a new class to the h1 tag
+
+        page_title.attr("class", "comicText");
+
+        //Change multiple elements
+        d3.selectAll("p").style("text-align", "center")
+            .attr("class", "comicText")
+
+
+    </script>
+
+
+
+
+
+
+
 </body>
 
 
