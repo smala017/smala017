@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset=”utf-8” />
+        <title>D3.js</title>
+
+        <link rel="stylesheet" href="style31.css">
+
+        <script src="/Homework/01-31/scripts/myFunctions.js"></script>
+
+        <!--loads the D3.js library v7-->
+        <script src="https://d3js.org/d3.v7.min.js"></script>
+    </head>
+    <body style="background-color:black;">
+        <div>
+            <h1 id="HL"></h1>
+        </div>
+
+       <!-- <p>This is an illustration of</p>
+        <p>the D3 function</p>
+        <p>.selectALL for changing multiple elements</p>  -->
+
+
+        <!--part 2-->
+        <!--basic D3.js functions: selections, changing attributes, ...-->
+        <div>
+            <svg width="2000" height="500" id="data-viz">
+                <rect width="2000" height="500" style="fill:transparent; stroke-width:1; stroke:black" />
+                <circle cx = "120" cy = "100" r="10" id="chn"/>
+                <circle cx = "240" cy = "100" r="10" id="usa"/>
+                <circle cx = "360" cy = "100" r="10" id="mex"/>
+            </svg>
+        </div>
+        
+        <script>
+            var page_title = d3.select('#HL');
+
+            // change individual element styles
+            // (attribute, value)
+            page_title.style("color", "blue");
+            page_title.style("font-size", "68px");
+
+            // chain multiple changes one after the other 
+            page_title.style("color", "steelblue")
+                .style("font-size", "50px");
+
+            // changing element attributes
+            // assign new class to the h1 tag
+            page_title.attr("class", "comicText");
+            
+            //how to change multiple element styles/attributes
+            d3.selectAll("p").style("text-align", "center")
+                .attr("class", "comicText");
+
+          //  d3.selectAll("circle")
+          //      .style("fill", "green")
+          //      .attr("cy", "120")
+          //      .attr("r", "30"); 
+
+            //illustrate how to change multiple SVG elements
+            var circle = d3.selectAll("circle").attr("fill", "silver")
+        </script>
+
+        <div>
+            <svg id="data-viz">
+
+            </svg>
+        </div>
+
+        <div>
+            <button onclick="drawCircles(data1)">Data 1</button>
+            <button onclick="drawCircles(data2)">Data 2</button>
+            <button onclick="drawCircles(data3)">Data 3</button>
+        </div>
+
+        <script>
+            // this is a data array: an array with data points
+            var data1 = [
+                {
+                    country: "usa",
+                    value: 128456
+                },
+                {
+                    country: "mex",
+                    value: 23084220
+                }
+            ];
+
+            var data2 = [
+                {
+                    country: "chn",
+                    value: 12834388
+                },
+                {
+                    country: "mex",
+                    value: 23084220
+                }
+            ];
+
+            var data3 = [
+                {
+                    country: "chn",
+                    value: 12834388
+                },
+                {
+                    country: "mex",
+                    value: 23084220
+                },
+                {
+                    country: "usa",
+                    value: 128456
+                }
+            ];
+
+            function randomPosition() {
+                return Math.random() * 140 + 70; 
+            }
+            
+
+            //create function that draws circles using data arrays
+            function drawCircles(dataArray) {
+
+                var circles = d3.select("#data-viz")
+                    .selectAll("circle")
+                    .data(dataArray, function(d) { 
+                        // if the function is called on an element from the data array, 
+                        // this returns the country from that element.
+                        // if the funcition is called on an existing circle, it uses
+                        // assignCountryToCircle() to return one of the country codes
+                        return d ? d.country : d3.select(this).attr("id");
+                    });
+
+                circles.join(
+                    //entering circles
+                    function(enter) {
+                        return enter.append("circle")
+                            .attr("fill", function(d) {
+                                if (d.country == "usa") {
+                                    return "blue";
+                                }
+                                else if (d.country == "mex") {
+                                    return "green";
+                                }
+                                else if (d.country == "chn") {
+                                    return "red";
+                                }
+                            })
+                            .attr("id", function(d) {
+                                d.country; 
+                            })
+                            .attr("cy", "100")
+                            .attr("cx", randomPosition)
+                            .attr("r", "0")
+                            .transition().duration(1000)
+                            .attr("r", "25");
+                        },
+                    //updating circles
+                    function(update) {
+                        return update.transition().duration(1000)
+                            .attr("cx", randomPosition)
+                            .attr("fill", function(d) {
+                                if (d.country == "usa") {
+                                    return "blue";
+                                }
+                                else if (d.country == "mex") {
+                                    return "green";
+                                }
+                                else if (d.country == "chn") {
+                                    return "red";
+                                }
+                            }
+                        );
+                    },
+                    //exiting circles
+                    function(exit) {
+                        return exit.transition().duration(1000)
+                            .attr("r", "0")
+                            .remove();
+                    }    
+                );   
+                
+                }
+        </script>
+
+        <!--part 3: D3.js for animations: data arrays, enter/update/exit-->
+        
+    </body>
+</html>

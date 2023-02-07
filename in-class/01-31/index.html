@@ -2,6 +2,12 @@
     <script src="scripts\myFunctions.js"></script>
     <script src = "https://d3js.org/d3.v7.min.js"></script>
     <link rel="stylesheet" href="style31.css">
+
+    <script>
+        function randomPosition() {
+            return Math.random()
+        }
+    </script>
 </head>
 
 <body>
@@ -19,6 +25,17 @@
     <p>This is a test</p>
     <p>of the D3 function</p>
     <p>.selectAll for changing multiple elements</p>
+
+    <!-- How to change multiple svg elements -->
+    <!-- <div>
+        <svg width="760" height = "200" id="data-viz">
+            <rect width = "760" height = "200" style = fill:white;stroke:black;stroke-width:1 />
+            
+            <circle/>
+            <circle cx = "120"/>
+            <circle cx = "240"/>
+        </svg>
+    </div> -->
 
     <script>
         var page_title = d3.select("#HL")
@@ -41,8 +58,84 @@
         d3.selectAll("p").style("text-align", "center")
             .attr("class", "comicText")
 
+        d3.selectAll("p").style("margin-top", "80px")
+
+        d3.selectAll("circle")
+            .style("fill", "green")
+            .attr("cy", "50")
+            .attr("r", "20")
 
     </script>
+
+    <script> 
+        //this is a data array
+        var data1 = [
+            {
+                country:"usa",
+                value:12412341
+            },
+            {
+                country:"mex",
+                value:24384627
+            }
+        ];
+
+        var data2 = [
+            {
+                country:"chn",
+                value:38573957
+            },
+            {
+                country:"mex",
+                value:29384627
+            }
+        ];
+
+        var data3 = [
+            {
+                country:"usa",
+                value:16666431
+            },
+            {
+                country:"chn",
+                value:48573957
+            },
+            {
+                country:"mex",
+                value:54384627
+            }
+        ];
+
+        //function that draws circles using data arrays
+        function drawCircles(dataArray) {
+
+            //"circles" is an empty container; it waits for SVG Shapes
+            var circles = d3.select("#data-viz").selectAll("circle")
+                .data(dataArray, function(d) {
+                    return d.country;
+                });
+
+            // Entering circles
+            circles.enter().append("circle")
+                .attr("cy", "100")
+                .attr("cx", randomPosition)
+                .attr("r", "0")
+                .transition().duration(1000)
+                .attr("r", "25")
+
+            //Updating circles
+            circles.transition().duration(1000)
+                .attr("cx", randomPosition);
+
+            //Exiting circles
+            
+            
+        }
+
+    </script>
+
+
+    
 
 
 
