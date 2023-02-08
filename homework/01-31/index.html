@@ -97,6 +97,12 @@
                         return d.name;
                     })
 
+                var text = svg.selectAll("text")
+                    .data(dataArray, function(d) {
+                        return d.name;
+                    })
+
+
 
                 //Enter  
                 circles.enter().append("circle")
@@ -117,6 +123,16 @@
                     .transition().duration(250)
                     .attr("r", function(d) {return d.r})
 
+                text.enter().append("text")
+                    .style("fill", "black")
+                    .attr("fill-opacity", 0)
+                    .attr("text-anchor", "middle")
+                    .attr("x", function(d) {return d.x * 20})
+                    .attr("y", function(d) {return d.y * 20})
+                    .text(function(d) {return d.name})
+                    .transition().duration(1250)
+                    .attr("fill-opacity", 1)
+
                 //Update
                 circles
                     .transition().duration(1000)
@@ -124,12 +140,22 @@
                     .attr("cx", function(d) {return d.x * 20})
                     .attr("cy", function(d) {return d.y * 20})
 
+                text
+                    .transition().duration(1000)
+                    .attr("x", function(d) {return d.x * 20})
+                    .attr("y", function(d) {return d.y * 20})
+
                 //Exit
                 circles.exit()
                     .transition().duration(250)
                     .attr("r", function(d) {return d.r * 1.25})
                     .transition().duration(1000)
                     .attr("r", 0)
+                    .remove();
+
+                text.exit()
+                    .transition().duration(1250)
+                    .attr("fill-opacity", 0)
                     .remove();
 
                     
