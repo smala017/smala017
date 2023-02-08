@@ -180,7 +180,7 @@ d3.csv("datasets/cities-sm.csv").then(function(data){
     const min_pop = d3.min(data, getValue);
     const max_pop = d3.max(data, getValue);
 
-    console.log(min_pop, max_pop);
+    console.log(min_pop + ", " + max_pop);
 
     // GROUPING DATA
 
