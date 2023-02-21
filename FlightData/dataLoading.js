@@ -1,7 +1,7 @@
 var i = 0;
 
 // NOTE: THE FLIGHTS CSV CANNOT BE INCLUDED BECAUSE IT EXCEEDS GITHUB'S FILE SIZE LIMIT
-// IT IS FOUND IN THE VizTech1 FOLDER
+// IT IS FOUND IN THE VizTech1 FOLDERR
 airportHeaders = "IATA_CODE,AIRPORT,CITY,STATE,COUNTRY,LATITUDE,LONGITUDE"
 csvStr = airportHeaders + "\n"
 d3.csv("airports.csv").then(function(data) {
