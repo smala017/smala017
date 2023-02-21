@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset=”utf-8” />
+        <title>HW6</title>
+
+        <script src="https://d3js.org/d3.v7.min.js"></script>
+        
+        <script src="dataLoading.js"></script>
+    </head>
+    <body>
+        <a href="../../">Return to Homepage</a>
+
+        <h3>2-3 Questions a User Might Have</h3>
+        <p>1. Which airports are the most frequestly-visited?</p>
+        <p>2. Which airlines provide the best on-time service from my local airport?</p>
+        <p>3. Which airports most frequently suffer delays?</p>
+
+        <h3>Visualization Strategies</h3>
+        <p>1. Map of airports geographically, with bubbles representing each airport and edges between the nodes representing the amount of direct connections between the two. A user can alter this map via filters and via hovering/clicking on nodes directly.</p>
+        <p>2. Bar charts showing the percentage of flights which are delayed by airline, within the applied filters.</p>
+
+        <svg id="canvas" width="400" height="400">
+            <rect width = "400" height = "400" style = fill:white;stroke:black;stroke-width:1 />/>
+        </svg>
+    </body>
+</html>
