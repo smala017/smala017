@@ -12,6 +12,7 @@ d3.csv("./data/gapminder.csv").then(function(data) {
     // An SVG Canvas's Viewport has a "width" and "height"
     const svg = d3.select("#chart")
         .append("svg")
+        .style("background-color", "oldlace")
         .attr("width", width)
         .attr("height", height);
 
@@ -21,7 +22,7 @@ d3.csv("./data/gapminder.csv").then(function(data) {
 
     let filtered_data = data.filter(function(d) {
 
-        return d.country === 'United States';
+        return d.country === 'South Africa';
 
     });
 
@@ -41,7 +42,7 @@ d3.csv("./data/gapminder.csv").then(function(data) {
     //4. CREATE SCALES
 
     const margin = {
-        top: 50, 
+        top: 100, 
         left: 100, 
         right: 50, 
         bottom: 100
@@ -50,10 +51,10 @@ d3.csv("./data/gapminder.csv").then(function(data) {
     const xScale = d3.scaleBand()
         .domain(["1952","1957","1962","1967","1972","1977","1982","1987","1992","1997","2002","2007"])
         .range([margin.left, width - margin.right])
-        .padding(0.5);
+        .padding(.3);
 
     const yScale = d3.scaleLinear()
-        .domain([50, lifeExp.max])
+        .domain([0, 90])
         .range([height - margin.bottom, margin.top]);
 
 
@@ -78,15 +79,15 @@ d3.csv("./data/gapminder.csv").then(function(data) {
 
     
     const colorScaleR = d3.scaleLinear()
-        .domain([lifeExp.min, lifeExp.max])
+        .domain([30, 90])
         .range([256, 100])
 
     const colorScaleG = d3.scaleLinear()
-        .domain([lifeExp.min, lifeExp.max])
+        .domain([30, 90])
         .range([100, 256])
 
     const colorScaleB = d3.scaleLinear()
-        .domain([lifeExp.min, lifeExp.max])
+        .domain([30, 90])
         .range([0, 50])
 
     const points = svg.selectAll("rect")
@@ -95,6 +96,8 @@ d3.csv("./data/gapminder.csv").then(function(data) {
         .append("rect")
             .attr("x", function(d) { return xScale(d.year); })
             .attr("y", function(d) { return yScale(d.lifeExp); })
+            .attr("stroke", "black")
+            .attr("stroke-width", "2pt")
             .attr("width", xScale.bandwidth())
             .attr("height", function(d) { return height - (margin.bottom + yScale(d.lifeExp))})
             .attr("fill", function(d) {
