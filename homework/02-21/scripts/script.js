@@ -79,16 +79,16 @@ d3.csv("./data/gapminder.csv").then(function(data) {
 
     
     const colorScaleR = d3.scaleLinear()
-        .domain([30, 90])
-        .range([256, 100])
+        .domain([40, 80])
+        .range([256, 50])
 
     const colorScaleG = d3.scaleLinear()
-        .domain([30, 90])
-        .range([100, 256])
+        .domain([40, 80])
+        .range([50, 256])
 
     const colorScaleB = d3.scaleLinear()
-        .domain([30, 90])
-        .range([0, 50])
+        .domain([40, 80])
+        .range([0, 0])
 
     const points = svg.selectAll("rect")
         .data(filtered_data)
