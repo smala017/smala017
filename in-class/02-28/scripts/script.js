@@ -78,6 +78,7 @@ d3.json("data/world-alpha3.json").then(function(world) {
      */
 
     var path = d3.geoPath().projection(proj);
+    console.log(geoJSON)
 
     map.selectAll("path")
         .data(geoJSON.features)
