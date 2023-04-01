@@ -3,35 +3,20 @@
   <head>
     <meta charset="utf-8" />
 
-    <link rel="stylesheet" type="text/css" href="./style/styles.css">
-
-
     <!-- NOTE: We are using D3 version 7 -->
     <script src="https://d3js.org/d3.v7.min.js"></script>
+
     <!-- Loads another JavaScript library to work with TopoJSON files -->
     <script src="https://unpkg.com/topojson-client@3"></script>
   </head>
   <body>
-    <a href="../../">Return to Homepage</a>
 
-    <h1>
-        Airport Flights Map
-    </h1>
-    <p>
-        I have a year's worth of flight data from many airports around the US. For each flight, I have its airline, departure and arrival airports, and its arrival delay. I also have more information about each airline and each airport, including coordinates of each airport. I would like to make a map that maps all of these flights geographically, showing the connections between different airports. This map should be able to be filtered by airport or airline. I also want the user to see the empirical delay on each flight. Perhaps one airline is delayed less frequently, and is therefore a better option for the consumer.
-    </p>
-
-    <div>
-        <svg id="canvas" width="1500" height="600">
-            <!-- 
-            <rect x="100" y="10" width = "990" height = "550" style = fill:white;stroke:black;stroke-width:1 />
-            <rect x="1110" y="10" width = "290" height = "550" style = fill:white;stroke:black;stroke-width:1 /> 
-            -->
-            
-            <g id="map"></g>
-        </svg>
-    </div>
-    
+    <svg id="viz">
+      <!-- The rectangle for the background color -->
+      <rect id="ocean" x="0" y="0" fill="#8AAAE5" />
+      
+      <g id="map"></g>
+    </svg>
 
     <script src="scripts/script.js"></script>
   </body>

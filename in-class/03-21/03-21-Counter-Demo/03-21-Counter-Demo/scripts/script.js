@@ -41,11 +41,13 @@ function dataJoin(data) {
     // specified above under "visualization specification".
 
     g.on("click", (event, datum) => {
-        // TO DO
+        counter[0] = Math.min(++datum, LIMIT);
+        dataJoin(counter);
     });
 
     g.on("dblclick", (event, datum) => {
-        // TO DO
+        counter[0] = 1;
+        dataJoin(counter);
     });
 
 }
