@@ -1,0 +1,16 @@
+1. Map of USA with circles representing airports. (mostly complete, see problems)
+
+2. Size of circles represent the number of flights to and from each airport. (complete) 
+
+3. Edges between each airport representing the amount of flights connecting the two.
+
+4. Menu for filtering flights by airport (arrival / departure), airline, and delay. 
+
+5. Interactivity by clicking on the map itself; i.e. clicking on an airport's bubble will select that airport in particular. 
+
+6. Maybe: Color code the edges, broken up by airline? 
+
+
+PROBLEMS:
+
+1) I still cannot figure out how to get any usa json file that works. For now, I've used the world JSON file and filtered it to USA only. But this makes the map smaller than it should be, and lacks state boundaries.

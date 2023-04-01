@@ -1,0 +1,21 @@
+1. Map of USA with circles representing airports.
+
+2. Size of circles represent the number of flights to and from each airport.
+
+3. Edges between each airport representing the amount of flights connecting the two.
+
+4. Menu for filtering flights by airport (arrival / departure), airline, and delay. 
+
+5. Interactivity by clicking on the map itself; i.e. clicking on an airport's bubble will select that airport in particular. 
+
+6. Maybe: Color code the edges, broken up by airline? 
+
+ 
+
+Unfortunately, I encountered problems I could not overcome and do not have any features implemented yet.
+
+PROBLEMS:
+
+1) I could not figure out how to draw the state boundaries on the map. I kept getting the following error for each state: Error: <path> attribute d: Expected number, "MNaN,NaNLNaN,NaNL…". I also am unable to plot circles for some reason. I think there is something going wrong because I am using the USA GeoJSON data instead of the World, and the transforming isn't happening correctly, I don't know I can't figure it out. 
+
+2) How do I load in a csv function into a data variable in d3 that I can then use *outside* of the "then" function? It's frustrating not having it guaranteed that the code will run sequentially. 
