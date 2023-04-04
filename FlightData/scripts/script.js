@@ -29,7 +29,7 @@ d3.select("#ocean")
 
 // 4. Here start building the geographical map by first loading a TopoJSON file.
 
-d3.json("data/world-alpha3.json").then(function(world) {
+d3.json("data/usa.json").then(function(usa) {
 
     /** 
      * 5.
@@ -40,7 +40,7 @@ d3.json("data/world-alpha3.json").then(function(world) {
      * (c) Properties, in this case `name` and `iso`. e.g., name: "Argentina", iso: "ARG"
     */
 
-    var geoJSON = topojson.feature(world, world.objects.countries);
+    var geoJSON = topojson.feature(usa, usa.objects.states);
     
     // 6.
     // We are removing the JavaScript object that stores the features
@@ -48,7 +48,7 @@ d3.json("data/world-alpha3.json").then(function(world) {
 
     geoJSON.features = geoJSON.features.filter(function(d) {
 
-        return d.id == "USA";
+        return true//(d.id != "AK") & (d.id != "HI") & (d.id != "PR");
         
     });
 
@@ -69,7 +69,10 @@ d3.json("data/world-alpha3.json").then(function(world) {
      * https://github.com/d3/d3-geo#azimuthal-projections
     */
 
-    var proj = d3.geoMercator().fitSize([width, height], geoJSON);
+    const proj = d3.geoMercator()
+      .fitSize([width, height], geoJSON)
+      .translate([width/2, height/2])
+      .scale(250);
 
     /**
      * 8. Geographical Path Constructor
@@ -77,7 +80,7 @@ d3.json("data/world-alpha3.json").then(function(world) {
      * 
      */
 
-    var path = d3.geoPath().projection(proj);
+    let path = d3.geoPath().projection(proj);
 
     map.selectAll("path")
         .data(geoJSON.features)
