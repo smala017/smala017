@@ -111,7 +111,7 @@ d3.csv("./data/gapminder.csv").then(function(data) {
     
 
 
-    //7. DRAW AXIS LABELS
+    //7. DRAW AX IS LABELS
 
     const xAxisLabel = svg.append("text")
         .attr("class","axisLabel")

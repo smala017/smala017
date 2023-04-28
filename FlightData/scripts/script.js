@@ -1,7 +1,6 @@
 // 1. Grab the dimensions of the open window in the browser.
 // Our geographical map will extend throughout the window.
 
-const width = window.innerWidth, height = window.innerHeight;
 
 // Try to use these two variables for `width` and `height` instead and
 // notice what happens to the size of the map visualization. Can you tell why?
@@ -14,18 +13,27 @@ const width = window.innerWidth, height = window.innerHeight;
 // to store just the element that holds our map; this element is a group
 // that in HTML tags is given by "g". See the index.html for more information.
 
+
+const mapPaddingX = 0, mapPaddingY = 0
+const svgwidth = window.innerWidth *.6, svgheight = window.innerHeight*.7;
+const circleSizeMult = svgwidth / 300
+
+const barTransTime = 500;
+
 const svg = d3.select("#viz")
-            .attr("width", width)
-            .attr("height", height);
+.attr("width", svgwidth)
+.attr("height", svgheight);
+
+
+selected = []
+
+
+
+
+
 
 const map = svg.select("#map");
 
-// 3. Because we are creating a map, we also want to add some kind of "ocean". This is going
-// to be just a rectangle that has an ID called #ocean. See the index.html
-
-d3.select("#ocean")
-  .attr("width", width)
-  .attr("height", height);
 
 // 4. Here start building the geographical map by first loading a TopoJSON file.
 
@@ -48,7 +56,7 @@ d3.json("data/usa.json").then(function(usa) {
 
     geoJSON.features = geoJSON.features.filter(function(d) {
 
-        return true//(d.id != "AK") & (d.id != "HI") & (d.id != "PR");
+        return (d.id != "AK") & (d.id != "HI") & (d.id != "PR");
         
     });
 
@@ -69,10 +77,12 @@ d3.json("data/usa.json").then(function(usa) {
      * https://github.com/d3/d3-geo#azimuthal-projections
     */
 
-    const proj = d3.geoMercator()
-      .fitSize([width, height], geoJSON)
-      .translate([width/2, height/2])
-      .scale(250);
+
+
+    const proj = d3.geoMercator()        
+      .fitSize([svgwidth-mapPaddingX, svgheight-mapPaddingY], geoJSON)
+      //.translate([svgwidth/2, svgheight/2])
+      //.scale(500);
 
     /**
      * 8. Geographical Path Constructor
@@ -104,12 +114,7 @@ d3.json("data/usa.json").then(function(usa) {
      * in the function to project them onto the map as pixel positions.
      */
 
-    // NOTE: The coordinates for a city are given as: [longitude, latitude]
-    //       because that is how the projection function wants them.
-    var points = [
-        {"name": "Boston", "coords": [-71.0589, 42.3601]},
-        {"name": "London", "coords": [-0.1278, 51.5074]}
-    ];
+
 
     // 10. The following is a D3 join pattern for adding SVG circle shapes. 
     //
@@ -121,32 +126,33 @@ d3.json("data/usa.json").then(function(usa) {
     // We define a variable for the radius of the circles that represent our cities.
     // We will use this variable in two different places below.
 
-    var circleRadius = 4;
 
     function circleSize(d) {
       flights = d["TOTAL_FLIGHTS"]
-      return Math.sqrt(flights / 20000)
+      return Math.sqrt(flights / 10000) * circleSizeMult
     }
 
     d3.csv("data/airports.csv").then(function(data){
       //SEE 3/21 classwork tooltip demo for an example of how to do this outside of the curly brackets
-      let airports = data;
+      let airports = data.filter(function(d) {
+          return (d["STATE"] != "AK") & (d["STATE"] != "HI") & (d["STATE"] != "PR") & (d["STATE"] != "VI")
+      });
 
       map.selectAll("circle")
         .data(airports)
         .enter().append("circle")
         .attr("r", function(d) {return circleSize(d)}) //TODO: Make this be the number of flights to and from the airport. I need a new column in the CSV.
-        .attr("fill", "#FF0000")
+        .attr("fill", "orange")
         .attr("stroke", "#000000")
         .attr("stroke-width", .2)
         .attr("opacity", .5)
+        .attr("id", function(d) {return d.IATA_CODE})
         .attr("transform", function(d) {
-            console.log(proj([+d.LONGITUDE, +d.LATITUDE]))
             return "translate(" + proj([+d.LONGITUDE, +d.LATITUDE]) + ")";
         });
 
       const brush = d3.brush()
-        .extent([[0, 0], [width, height]])
+        .extent([[0, 0], [svgwidth, svgheight]])
         .on("start", brushed)
         .on("brush", brushed)
         .on("end", brushed);
@@ -155,7 +161,7 @@ d3.json("data/usa.json").then(function(usa) {
       function brushed(event) {
         const brushedCoords = event.selection;
         if (brushedCoords) {
-          const brushedData = data.map(
+          const brushedData = airports.map(
             d => {
               return {
                 ...d,
@@ -171,20 +177,32 @@ d3.json("data/usa.json").then(function(usa) {
                 },
                 function(update) {
                   return update
-                    .style("fill", d=> d.selected ? "blue" : "red")
+                    .attr("fill", d => d.selected ? "blue" : "orange")
                 },
                 function(exit) {
 
                 }
             );
         }
+        updateCharts();
       }
 
       function isBrushed(brushedCoords, d) {
         const [[x0, y0], [x1, y1]] = brushedCoords;
         const [xs, ys] = proj([+d.LONGITUDE, +d.LATITUDE])
 
-        return x0 <= xs && xs < x1 && y0 <= ys && ys < y1;
+        brushedBool = x0 <= xs && xs < x1 && y0 <= ys && ys < y1;
+
+        // This is how I am keeping track of which airports are selected 
+        iata = d.IATA_CODE
+        if (brushedBool & (!selected.includes(iata))) {
+            selected.push(iata)
+        }
+        if ((!brushedBool) & selected.includes(iata)) {
+          selected.splice(selected.indexOf(iata), 1)
+        }
+
+        return brushedBool;
       }
 
       svg.append("g")
@@ -192,61 +210,224 @@ d3.json("data/usa.json").then(function(usa) {
         .call(brush);
 
 
+
+      // bar graphs
+
+      const margin = {
+        top: 10, 
+        left: 35, 
+        right: 5 , 
+        bottom: 25
+      };
+      
+      chart1svg = d3.select("#chart1")
+      chart2svg = d3.select("#chart2")
+      chart3svg = d3.select("#chart3")
+    
+
+
+    chartWidth = document.getElementById("chart1").getBoundingClientRect().width
+    chartHeight = document.getElementById("chart1").getBoundingClientRect().height
+
+    
+
+
+
+    updateCharts = function() {
+
+      filteredAirports = airports.filter(function(a) {
+        return selected.includes(a["IATA_CODE"])
+      })
+
+      unitedCount = filteredAirports.reduce((acc, currentValue) => {
+        return acc + +currentValue.UNITED_FLIGHTS;
+      }, 0);
+      deltaCount = filteredAirports.reduce((acc, currentValue) => {
+        return acc + +currentValue.DELTA_FLIGHTS;
+      }, 0);
+      americanCount = filteredAirports.reduce((acc, currentValue) => {
+        return acc + +currentValue.AMERICAN_FLIGHTS;
+      }, 0);
+      otherCount = filteredAirports.reduce((acc, currentValue) => {
+        return acc + +currentValue.OTHER_FLIGHTS;
+      }, 0);
+
+      function getColumnAverage(column) {
+        var sum = 0;
+        var flightscount= 0;
+        for (var i = 0; i < filteredAirports.length; i++) {
+          sum += +filteredAirports[i][column];
+        }
+
+        return sum / filteredAirports.length;
+      }
+
+      totalCount  = unitedCount + deltaCount + americanCount + otherCount
+
+      countsData = [
+        { label: "UA", val:  unitedCount / totalCount},
+        { label: "Delta", val: deltaCount / totalCount},
+        { label: "AA", val: americanCount / totalCount},
+        { label: "Other", val: otherCount / totalCount}
+      ];
+
+      inDelayData = [
+        { label: "UA", val:  getColumnAverage("UNITED_IN_DELAY")},
+        { label: "Delta", val: getColumnAverage("DELTA_IN_DELAY")},
+        { label: "AA", val: getColumnAverage("AMERICAN_IN_DELAY")},
+        { label: "Other", val: getColumnAverage("OTHER_IN_DELAY")}
+      ];
+
+      outDelayData = [
+        { label: "UA", val:  getColumnAverage("UNITED_OUT_DELAY")},
+        { label: "Delta", val: getColumnAverage("DELTA_OUT_DELAY")},
+        { label: "AA", val: getColumnAverage("AMERICAN_OUT_DELAY")},
+        { label: "Other", val: getColumnAverage("OTHER_OUT_DELAY")}
+      ];
+
+      // overriding the data if selected is empty
+      zeroData = [
+        { label: "UA", val:  0},
+        { label: "Delta", val: 0},
+        { label: "AA", val: 0},
+        { label: "Other", val: 0}
+      ];
+      if (selected.length == 0) {
+        countsData = zeroData
+        inDelayData = zeroData
+        outDelayData = zeroData
+      }
+
+      // bind data to bars
+      const chart1bars = d3.select("#chart1")
+        .selectAll(".bar")
+        .data(countsData);
+      const chart2bars = d3.select("#chart2")
+        .selectAll(".bar")
+        .data(inDelayData);
+      const chart3bars = d3.select("#chart3")
+        .selectAll(".bar")
+        .data(outDelayData);
+
+      bars = d3.selectAll(".bar")
+      
+      // exit bars
+      chart1bars.exit().remove();
+      chart2bars.exit().remove();
+      chart3bars.exit().remove();
+      
+      // update bars
+      chart1bars.attr("x", d => xScale(d.label))
+        .transition()
+        .duration(barTransTime)
+        .attr("y", d => yScale(d.val))
+        .attr("height", d => chartHeight-margin.bottom - yScale(d.val))
+        .attr("fill", "royalblue");
+      chart2bars.attr("x", d => xScale(d.label))
+        .transition()
+        .duration(barTransTime)
+        .attr("y", d => yScale2(Math.max(d.val,0)))
+        .attr("height", d => Math.abs(yScale2(d.val) - yScale2(0)))
+        .attr("fill", function(d) {
+          return (d.val >= 0) ? "red" : "green"
+        });
+      chart3bars.attr("x", d => xScale(d.label))
+        .transition()
+        .duration(barTransTime)
+        .attr("y", d => yScale2(Math.max(d.val,0)))
+        .attr("height", d => Math.abs(yScale2(d.val) - yScale2(0)))
+        .attr("fill", function(d) {
+          return (d.val >= 0) ? "red" : "green"
+        });
+
+      // enter bars
+      chart1bars.enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", d => xScale(d.label))
+        .attr("y", d => yScale(d.val))
+        .attr("width", xScale.bandwidth())
+        .attr("height", d => chartHeight-margin.bottom - yScale(d.val))
+        .attr("fill", "royalblue");
+      chart2bars.enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", d => xScale(d.label))
+        .attr("y", d => yScale2(Math.max(d.val,0)))
+        .attr("width", xScale.bandwidth())
+        .attr("height", d => Math.abs(yScale2(d.val) - yScale2(0)))
+        .attr("fill", function(d) {
+          return (d.val >= 0) ? "red" : "green"
+        });
+      chart3bars.enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", d => xScale(d.label))
+        .attr("y", d => yScale2(Math.max(d.val,0)))
+        .attr("width", xScale.bandwidth())
+        .attr("height", d => Math.abs(yScale2(d.val) - yScale2(0)))
+        .attr("fill", function(d) {
+          return (d.val >= 0) ? "red" : "green"
+        });
+
+    }
+
+    const xScale = d3.scaleBand()
+        .domain(["UA", "Delta", "AA", "Other"])
+        .range([margin.left, chartWidth - margin.right])
+        .padding(.3);
+
+    const yScale = d3.scaleLinear()
+        .domain([0, 1])
+        .range([chartHeight - margin.bottom, margin.top]);
+
+    const yScale2 = d3.scaleLinear()
+      .domain([-4, 10])
+      .range([chartHeight - margin.bottom, margin.top]);
+
+    const chart1xAxis = chart1svg.append("g")
+        .attr("class","axis")
+        .attr("transform", `translate(0,${chartHeight-margin.bottom})`)
+        .call(d3.axisBottom().scale(xScale));
+
+    const chart1yAxis = chart1svg.append("g")
+        .attr("class","axis")
+        .attr("transform", `translate(${margin.left},0)`)
+        .call(d3.axisLeft().scale(yScale).tickFormat(d3.format(".0%")));
+
+    const chart2xAxis = chart2svg.append("g")
+        .attr("class","axis")
+        .attr("transform", `translate(0,${chartHeight-margin.bottom})`)
+        .call(d3.axisBottom().scale(xScale));
+
+    //0 line for the second chart
+    const chart2zeroAxis = chart2svg.append("line")
+      .attr("x1", xScale("UA") - .5*xScale.bandwidth())
+      .attr("y1", yScale2(0))
+      .attr("x2", xScale("Other") + 1.5*xScale.bandwidth())
+      .attr("y2", yScale2(0))
+      .attr("stroke", "black")
+
+    const chart2yAxis = chart2svg.append("g")
+        .attr("class","axis")
+        .attr("transform", `translate(${margin.left},0)`)
+        .call(d3.axisLeft().scale(yScale2));
+
+    const chart3xAxis = chart3svg.append("g")
+        .attr("class","axis")
+        .attr("transform", `translate(0,${chartHeight-margin.bottom})`)
+        .call(d3.axisBottom().scale(xScale));
+
+    //0 line for the second chart
+    const chart3zeroAxis = chart3svg.append("line")
+      .attr("x1", xScale("UA") - .5*xScale.bandwidth())
+      .attr("y1", yScale2(0))
+      .attr("x2", xScale("Other") + 1.5*xScale.bandwidth())
+      .attr("y2", yScale2(0))
+      .attr("stroke", "black")
+
+    const chart3yAxis = chart3svg.append("g")
+        .attr("class","axis")
+        .attr("transform", `translate(${margin.left},0)`)
+        .call(d3.axisLeft().scale(yScale2));
+
     })
-
-    /**
-     * 11. D3 Zoom and Pan
-     * 
-     * D3 provides a method called .zoom() that adds zoom and pan behaviour to an
-     * HTML or SVG element. 
-     * 
-     * For more information, see: https://www.d3indepth.com/zoom-and-pan/
-     * 
-     * Documentation: https://github.com/d3/d3-zoom
-     */
-
-    function zoomed(e) {
-        // The parameter `e` represents an event, that is, a zoom event.
-        // e.transform represents the latest zoom transform caused by a zoom event
-        // and it is applied to the svg map element (see the index.html).
-        map.attr("transform", e.transform);
-
-        // RESIZING Circles: 
-        // Uncomment the following lines of code to scale the circles/cities 
-        // based on how you zoom into the map.
-
-        // We divide our original circleRadius with the current transformation
-        // of our `map` container caused by the zooming behaviour. The attribute
-        // .k retrieves the scaling factor of the current transformation.
-
-        // Take a look at the documentation for D3 events to understand what 
-        // <event>.transform.k means:
-        // https://github.com/d3/d3-zoom#zoom-transforms
-
-        // map.selectAll("circle")
-        //     .attr("r", function(d){
-        //         return circleRadius/e.transform.k;
-        //     });
-    };
-
-    // Calling d3.zoom() creates a zoom behavior. Note, the .zoom() method 
-    // handles both zoom and pan events.
-    let zoom = d3.zoom()
-        // This essentially constraints the user so that the user can only
-        // zoom and pan within specific bounds, e.g., our window's width and height.
-        // Top-Left Point of Browser: [0, 0]
-        // Bottom-Right Point of Browser: [width, height]
-        .translateExtent([[0, 0], [width, height]])
-        // This constraints the extent to which you can zoom in and out.
-        //          [minimum scale factor, maximum scale factor]
-        // Experiment with different values to see the behavior of zooming.
-        .scaleExtent([1, 15])
-        // The .on() method is D3's standard event listener, like user clicks, mouseover, etc.
-        .on("zoom", zoomed);
-
-    // Here, we allow the zoom function which controls the zoom and pan behavior to be called
-    // into the element we selected, i.e., the svg container that holds all our visualization.
-    // See the beginning of this file for how the variable `svg` is defined.
-    svg.call(zoom);
 
 });

@@ -1,23 +1,95 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-
-    <!-- NOTE: We are using D3 version 7 -->
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-
-    <!-- Loads another JavaScript library to work with TopoJSON files -->
-    <script src="https://unpkg.com/topojson-client@3"></script>
-  </head>
-  <body>
-
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- NOTE: We are using D3 version 7 -->
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<!-- Loads another JavaScript library to work with TopoJSON files -->
+<script src="https://unpkg.com/topojson-client@3"></script>
+<title></title>
+<style>
+  * {
+  font-family:'Gill Sans', 'Gill Sans MT', 'Calibri', 'Trebuchet MS', sans-serif
+  
+}
+  body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color:rgb(45, 23, 52);
+  }
+  .container {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .map-section {
+    flex: 3; /* changed from flex: 3 */
+    background-color: none;
+    padding-left: 2rem;
+  }
+  .side-menu {
+    flex: 1;
+    background-color: lightgrey;
+    padding: 1rem;
+  }
+  .titlediv {
+    color:white;
+    margin-right:5rem;
+  }
+  h5 {
+    margin-top:0rem;
+    margin-bottom: .3rem;
+  }
+  .chart {
+    height: calc((100% - 6rem) / 3);
+    margin: 0rem;
+    background-color: white;
+    margin-bottom: 1.3rem;
+  }
+  .bar {
+  stroke: black;
+  stroke-width: 1px;
+  } 
+  #viz {
+    width: 100%;
+    height: 100%;
+  }
+  path {
+    stroke: black;
+    stroke-width: 1;
+    fill: gainsboro;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="map-section">
+    <div class="titlediv">
+      <h1>Flight Delays by Airport and Airline</h1>
+      <p>In this project, I have compiled data from over 6 million flights across the contiguous United States in 2015 to create this interactive visualization which may be used to discover patterns and trends about different airlines and their asssociated delays.</p>
+    </div>
     <svg id="viz">
-      <!-- The rectangle for the background color -->
-      <rect id="ocean" x="0" y="0" fill="#8AAAE5" />
-      
       <g id="map"></g>
     </svg>
-
-    <script src="scripts/script.js"></script>
-  </body>
+  </div>
+  <div class="side-menu">
+    <div class="label"><h5>Number of Flights</h5></div>
+    <div class="chart">
+      <svg id="chart1" position="absolute" width="100%" height="100%"></svg>
+    </div>
+    <div class="label"><h5>Avg. Inbound Arrival Delay (Minutes)</h5></div>
+    <div class="chart">
+      <svg id="chart2" position="absolute" width="100%" height="100%"></svg>
+    </div>
+    <div class="label"><h5>Avg. Outbound Arrival Delay (Minutes)</h5></div>
+    <div class="chart">
+      <svg id="chart3" position="absolute" width="100%" height="100%"></svg>
+    </div>
+  </div>
+</div>
+<script src="scripts/script.js"></script>
+</body>
 </html>
